@@ -3,11 +3,439 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>START.exe | Tera Coding Bhaiya | by Anurag Rajput</title>
+  <title>START.exe | Tera Coding Bhaiya</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='20' fill='%2322c55e'/%3E%3Ctext x='14' y='68' font-size='58' font-family='monospace' font-weight='bold' fill='white'%3E%3E_%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0d1117;--bg2:#161b22;--card:#1c2128;--surface:#21262d;
+      --border:#30363d;--border2:#3d444d;
+      --txt:#e6edf3;--txt2:#7d8590;--txt3:#484f58;
+      --green:#3fb950;--green2:#56d364;--green3:#aff5b4;
+      --blue:#58a6ff;--purple:#bc8cff;--orange:#ffa657;
+      --yellow:#e3b341;--red:#ff7b72;--pink:#f778ba;
+      --cyan:#39d0d8;
+      --ff:'Syne',sans-serif;--fb:'Outfit',sans-serif;--fm:'DM Mono',monospace;
+      --spring:cubic-bezier(.34,1.56,.64,1);
+    }
+    html,body{height:100%;overflow:hidden}
+    body{font-family:var(--fb);background:var(--bg);color:var(--txt);
+      display:flex;flex-direction:column;cursor:none}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background-image:radial-gradient(rgba(63,185,80,.035) 1px,transparent 1px);
+      background-size:28px 28px}
+
+    /* CURSOR */
+    #cursor{pointer-events:none;position:fixed;z-index:9999;width:10px;height:10px;
+      border-radius:50%;background:var(--green);opacity:.7;
+      transform:translate(-50%,-50%);transition:width .1s,height .1s}
+
+    /* ── NAV ── */
+    nav{position:relative;z-index:10;height:52px;flex-shrink:0;
+      background:var(--bg2);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;padding:0 1rem}
+    .nav-brand{display:flex;align-items:center;gap:.5rem;text-decoration:none}
+    .nav-logo{width:30px;height:30px;border-radius:7px;background:var(--green);
+      display:flex;align-items:center;justify-content:center;
+      font-family:var(--ff);font-size:.85rem;font-weight:800;color:#0d1117;
+      box-shadow:0 0 12px rgba(63,185,80,.35);flex-shrink:0}
+    .nav-title{font-family:var(--ff);font-size:.95rem;font-weight:800;color:var(--green)}
+    .nav-sub{font-family:var(--fm);font-size:.52rem;color:var(--txt3);
+      letter-spacing:.1em;text-transform:uppercase;display:none}
+    @media(min-width:520px){.nav-sub{display:inline}}
+    .nav-right{display:flex;align-items:center;gap:.4rem}
+    .lang-toggle{display:flex;gap:2px;background:var(--surface);
+      border:1px solid var(--border);border-radius:6px;padding:2px}
+    .lang-btn{padding:2px 8px;border-radius:4px;font-family:var(--fm);
+      font-size:.55rem;font-weight:700;cursor:pointer;border:none;
+      background:transparent;color:var(--txt3);transition:all .12s;
+      text-transform:uppercase;letter-spacing:.06em}
+    .lang-btn.active{background:var(--green);color:#0d1117}
+    .nav-link{width:28px;height:28px;border-radius:5px;background:var(--surface);
+      border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+      color:var(--txt2);font-size:.7rem;text-decoration:none;transition:all .12s}
+    .nav-link:hover{background:var(--green);color:#0d1117;border-color:var(--green)}
+
+    /* ── TAB BAR ── */
+    .tab-bar{position:relative;z-index:9;flex-shrink:0;
+      background:var(--bg2);border-bottom:1px solid var(--border);
+      display:flex;overflow-x:auto;scrollbar-width:none}
+    .tab-bar::-webkit-scrollbar{display:none}
+    .tab-btn{display:flex;align-items:center;gap:.4rem;
+      padding:.55rem .9rem;font-family:var(--fm);font-size:.58rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);
+      cursor:pointer;border:none;background:transparent;
+      border-bottom:2px solid transparent;white-space:nowrap;
+      transition:all .12s;flex-shrink:0}
+    .tab-btn i{font-size:.65rem}
+    .tab-btn:hover{color:var(--txt2)}
+    .tab-btn.active{color:var(--green);border-bottom-color:var(--green)}
+
+    /* ── MAIN ── */
+    .main{position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column}
+
+    /* all panels */
+    .panel{display:none;flex:1;overflow:hidden;flex-direction:column}
+    .panel.active{display:flex}
+
+    /* panel inner scroll */
+    .panel-scroll{flex:1;overflow-y:auto;padding:1.2rem}
+    .panel-scroll::-webkit-scrollbar{width:4px}
+    .panel-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+    /* ─────────────────────────────────
+       SHARED COMPONENTS
+    ───────────────────────────────── */
+    .sec-title{font-family:var(--ff);font-size:1.1rem;font-weight:800;
+      color:var(--txt);margin-bottom:.2rem}
+    .sec-sub{font-family:var(--fm);font-size:.62rem;color:var(--txt3);
+      margin-bottom:1.2rem;letter-spacing:.06em}
+    .card{background:var(--card);border:1px solid var(--border);
+      border-radius:10px;padding:1rem 1.2rem;margin-bottom:.8rem}
+    .card.green{border-left:3px solid var(--green)}
+    .card.blue{border-left:3px solid var(--blue)}
+    .card.orange{border-left:3px solid var(--orange)}
+    .card.purple{border-left:3px solid var(--purple)}
+    .card.yellow{border-left:3px solid var(--yellow)}
+    .card.red{border-left:3px solid var(--red)}
+    .card.cyan{border-left:3px solid var(--cyan)}
+    .label{font-family:var(--fm);font-size:.55rem;color:var(--txt3);
+      text-transform:uppercase;letter-spacing:.15em;margin-bottom:.5rem;
+      display:flex;align-items:center;gap:.3rem}
+    .label i{font-size:.55rem}
+    .chip-wrap{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.8rem}
+    .chip{padding:.35rem .8rem;border-radius:6px;border:1px solid var(--border2);
+      background:var(--surface);color:var(--txt2);font-family:var(--fm);
+      font-size:.62rem;cursor:pointer;transition:all .12s;user-select:none}
+    .chip:hover{border-color:var(--green);color:var(--txt)}
+    .chip.on{background:rgba(63,185,80,.1);border-color:var(--green);color:var(--green)}
+    textarea,input[type=text],select{width:100%;padding:.7rem .9rem;
+      border-radius:8px;border:1px solid var(--border2);background:var(--card);
+      color:var(--txt);font-family:var(--fb);font-size:.88rem;
+      outline:none;resize:vertical;transition:border-color .15s,box-shadow .15s;
+      appearance:none}
+    textarea:focus,input[type=text]:focus,select:focus{
+      border-color:var(--green);box-shadow:0 0 0 3px rgba(63,185,80,.1)}
+    textarea::placeholder,input::placeholder{color:var(--txt3)}
+    select option{background:var(--card)}
+    .action-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;
+      padding:.75rem 1.5rem;border-radius:8px;border:2px solid var(--green);
+      background:var(--green);color:#0d1117;
+      font-family:var(--ff);font-size:.88rem;font-weight:800;
+      cursor:pointer;transition:all .15s var(--spring);
+      box-shadow:3px 3px 0 rgba(63,185,80,.2);text-transform:uppercase;letter-spacing:.06em}
+    .action-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 rgba(63,185,80,.25)}
+    .action-btn:active{transform:translate(1px,1px);box-shadow:none}
+    .action-btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+    .action-btn.outline{background:transparent;color:var(--green)}
+    .action-btn.outline:hover{background:rgba(63,185,80,.08)}
+    .output-box{background:var(--bg2);border:1px solid var(--border2);
+      border-radius:8px;padding:.9rem 1rem;font-size:.85rem;line-height:1.7;
+      color:var(--txt);margin-top:.8rem;min-height:80px;display:none}
+    .output-box.show{display:block}
+    .output-box code{font-family:var(--fm);font-size:.75rem;
+      background:var(--surface);border:1px solid var(--border);
+      padding:1px 5px;border-radius:3px;color:var(--orange)}
+    .output-box pre{font-family:var(--fm);font-size:.75rem;
+      background:var(--bg);border:1px solid var(--border);
+      padding:.7rem;border-radius:6px;overflow-x:auto;
+      color:var(--green3);line-height:1.6;margin:.4rem 0;white-space:pre-wrap}
+    .output-box strong{color:var(--green2)}
+    .output-box ul{padding-left:1.2rem;margin:.3rem 0}
+    .output-box li{margin-bottom:.25rem}
+    .loading-dots{display:inline-flex;gap:3px;align-items:center}
+    .loading-dots span{width:5px;height:5px;border-radius:50%;background:var(--green);
+      animation:ld .7s ease-in-out infinite}
+    .loading-dots span:nth-child(2){animation-delay:.15s}
+    .loading-dots span:nth-child(3){animation-delay:.3s}
+    @keyframes ld{0%,80%,100%{transform:scale(.5);opacity:.3}40%{transform:scale(1);opacity:1}}
+    .copy-btn{display:inline-flex;align-items:center;gap:.3rem;
+      padding:.3rem .7rem;border-radius:5px;border:1px solid var(--border2);
+      background:var(--surface);color:var(--txt2);font-family:var(--fm);
+      font-size:.58rem;cursor:pointer;transition:all .12s;margin-top:.5rem}
+    .copy-btn:hover{border-color:var(--green);color:var(--green)}
+    .step-box{display:flex;gap:.7rem;padding:.7rem;background:var(--surface);
+      border:1px solid var(--border);border-radius:8px;margin-bottom:.5rem}
+    .step-num{width:24px;height:24px;border-radius:50%;background:var(--green);
+      color:#0d1117;font-family:var(--fm);font-size:.6rem;font-weight:700;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .step-content{flex:1;font-size:.82rem;line-height:1.5}
+    .step-content strong{color:var(--txt);font-weight:600}
+    .step-content .cmd{font-family:var(--fm);font-size:.72rem;
+      background:var(--bg);border:1px solid var(--border);
+      padding:.4rem .7rem;border-radius:5px;color:var(--green2);
+      display:block;margin:.3rem 0;cursor:pointer;transition:background .12s}
+    .step-content .cmd:hover{background:rgba(63,185,80,.06)}
+    .badge{display:inline-flex;align-items:center;gap:.25rem;
+      font-family:var(--fm);font-size:.55rem;font-weight:700;
+      padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.08em}
+    .badge.green{color:var(--green);background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.25)}
+    .badge.blue{color:var(--blue);background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.25)}
+    .badge.orange{color:var(--orange);background:rgba(255,166,87,.1);border:1px solid rgba(255,166,87,.25)}
+    .badge.red{color:var(--red);background:rgba(255,123,114,.1);border:1px solid rgba(255,123,114,.25)}
+    .badge.yellow{color:var(--yellow);background:rgba(227,179,65,.1);border:1px solid rgba(227,179,65,.25)}
+    .progress-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem}
+    .prog-label{font-family:var(--fm);font-size:.6rem;color:var(--txt2);
+      min-width:100px;text-transform:uppercase;letter-spacing:.06em}
+    .prog-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+    .prog-fill{height:100%;border-radius:3px;transition:width .6s var(--spring)}
+    .prog-val{font-family:var(--fm);font-size:.58rem;color:var(--txt3);min-width:30px;text-align:right}
+
+    /* ─────────────────────────────────
+       PANEL 0 — CHAT BHAIYA
+    ───────────────────────────────── */
+    .chat-messages{flex:1;overflow-y:auto;padding:1rem;
+      display:flex;flex-direction:column;gap:.75rem}
+    .chat-messages::-webkit-scrollbar{width:3px}
+    .chat-messages::-webkit-scrollbar-thumb{background:var(--border2)}
+    .msg{display:flex;gap:.6rem;animation:msg-in .2s var(--spring)}
+    @keyframes msg-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .msg.user{flex-direction:row-reverse}
+    .av{width:30px;height:30px;border-radius:50%;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;font-size:.7rem;
+      font-weight:800;font-family:var(--ff);margin-top:.1rem}
+    .av.b{background:linear-gradient(135deg,var(--green),#1a7f37);color:#fff;
+      box-shadow:0 0 8px rgba(63,185,80,.3)}
+    .av.u{background:var(--surface);border:1.5px solid var(--border2);color:var(--txt2)}
+    .msg-inner{max-width:76%;display:flex;flex-direction:column;gap:.2rem}
+    .msg.user .msg-inner{align-items:flex-end}
+    .msg-who{font-family:var(--fm);font-size:.5rem;color:var(--txt3);
+      letter-spacing:.08em;text-transform:uppercase;padding:0 .3rem}
+    .bubble{padding:.7rem .95rem;border-radius:10px;font-size:.86rem;line-height:1.65;word-break:break-word}
+    .msg.b .bubble{background:var(--card);border:1px solid var(--border);
+      border-radius:3px 10px 10px 10px;color:var(--txt)}
+    .msg.user .bubble{background:var(--green);color:#0d1117;
+      border-radius:10px 3px 10px 10px;font-weight:500}
+    .bubble code{font-family:var(--fm);font-size:.75rem;background:var(--surface);
+      border:1px solid var(--border);padding:1px 5px;border-radius:3px;color:var(--orange)}
+    .msg.user .bubble code{background:rgba(0,0,0,.15);border-color:rgba(0,0,0,.2);color:#0d1117}
+    .bubble pre{font-family:var(--fm);font-size:.73rem;background:var(--bg);
+      border:1px solid var(--border);padding:.6rem .8rem;border-radius:6px;
+      overflow-x:auto;color:var(--green3);line-height:1.6;margin:.35rem 0;white-space:pre-wrap}
+    .bubble strong{color:var(--green2);font-weight:700}
+    .bubble a{color:var(--blue);text-decoration:none}
+    .bubble a:hover{text-decoration:underline}
+    .bubble ul{padding-left:1.1rem;margin:.25rem 0}
+    .bubble li{margin-bottom:.2rem}
+    .qr-row{display:flex;flex-wrap:wrap;gap:.3rem;padding:.15rem 0 .3rem}
+    .qr{padding:.35rem .75rem;border-radius:16px;border:1px solid var(--border2);
+      background:var(--surface);color:var(--txt2);font-family:var(--fb);
+      font-size:.72rem;cursor:pointer;transition:all .12s;white-space:nowrap}
+    .qr:hover{border-color:var(--green);color:var(--green);background:rgba(63,185,80,.06)}
+    .typing-b{display:flex;gap:.6rem;align-items:center}
+    .typing-bubble{padding:.55rem .8rem;background:var(--card);border:1px solid var(--border);
+      border-radius:3px 10px 10px 10px;display:flex;align-items:center;gap:3px}
+    .td{width:5px;height:5px;border-radius:50%;background:var(--txt3);
+      animation:td .75s ease-in-out infinite}
+    .td:nth-child(2){animation-delay:.14s}
+    .td:nth-child(3){animation-delay:.28s}
+    @keyframes td{0%,80%,100%{transform:scale(.5);opacity:.3}40%{transform:scale(1);opacity:1}}
+    .chat-input-wrap{flex-shrink:0;padding:.65rem 1rem;
+      background:var(--bg2);border-top:1px solid var(--border)}
+    .chat-input-row{display:flex;gap:.45rem;align-items:flex-end;
+      background:var(--card);border:1px solid var(--border2);
+      border-radius:10px;padding:.45rem .5rem .45rem .85rem;
+      transition:border-color .15s,box-shadow .15s}
+    .chat-input-row:focus-within{border-color:var(--green);
+      box-shadow:0 0 0 3px rgba(63,185,80,.1)}
+    #ci{flex:1;background:transparent;border:none;outline:none;
+      font-family:var(--fb);font-size:.88rem;color:var(--txt);
+      resize:none;max-height:110px;min-height:22px;line-height:1.5;padding:.15rem 0}
+    #ci::placeholder{color:var(--txt3)}
+    .send{width:32px;height:32px;border-radius:7px;border:none;
+      background:var(--green);color:#0d1117;font-size:.75rem;
+      cursor:pointer;flex-shrink:0;transition:all .12s var(--spring);
+      display:flex;align-items:center;justify-content:center}
+    .send:hover{transform:scale(1.08)}
+    .send:disabled{opacity:.4;cursor:not-allowed;transform:none}
+    .input-hint{font-family:var(--fm);font-size:.5rem;color:var(--txt3);
+      text-align:center;margin-top:.3rem;letter-spacing:.06em}
+    .module-shortcuts{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.5rem}
+    .mshort{padding:.28rem .65rem;border-radius:5px;border:1px solid var(--border);
+      background:var(--surface);color:var(--txt3);font-family:var(--fm);
+      font-size:.55rem;cursor:pointer;transition:all .12s;
+      display:flex;align-items:center;gap:.25rem;text-transform:uppercase;letter-spacing:.06em}
+    .mshort:hover{border-color:var(--green);color:var(--green)}
+    .mshort i{font-size:.55rem}
+
+    /* ─────────────────────────────────
+       PANEL 1 — IDEA GENERATOR
+    ───────────────────────────────── */
+    .idea-card{background:var(--card);border:1px solid var(--border2);
+      border-radius:10px;padding:1rem;margin-bottom:.6rem;cursor:pointer;
+      transition:all .15s;animation:fade-in .2s ease}
+    @keyframes fade-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .idea-card:hover{border-color:var(--green);background:rgba(63,185,80,.04)}
+    .idea-name{font-family:var(--ff);font-size:.95rem;font-weight:800;color:var(--txt);
+      margin-bottom:.3rem;display:flex;align-items:center;gap:.5rem}
+    .idea-desc{font-size:.8rem;color:var(--txt2);line-height:1.5;margin-bottom:.5rem}
+    .idea-meta{display:flex;gap:.4rem;flex-wrap:wrap}
+
+    /* ─────────────────────────────────
+       PANEL 2 — PROJECT BUILDER
+    ───────────────────────────────── */
+    .task-item{display:flex;align-items:flex-start;gap:.6rem;
+      padding:.6rem .8rem;background:var(--surface);border:1px solid var(--border);
+      border-radius:7px;margin-bottom:.4rem;cursor:pointer;transition:all .12s}
+    .task-item:hover{border-color:var(--border2)}
+    .task-item.done{opacity:.55}
+    .task-item.done .task-text{text-decoration:line-through;color:var(--txt3)}
+    .task-cb{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--border2);
+      background:var(--card);flex-shrink:0;margin-top:.1rem;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .15s;color:transparent;font-size:.6rem}
+    .task-item.done .task-cb{background:var(--green);border-color:var(--green);color:#0d1117}
+    .task-text{font-size:.82rem;color:var(--txt);line-height:1.4}
+    .task-phase{font-family:var(--fm);font-size:.55rem;color:var(--txt3);
+      margin-top:.1rem;text-transform:uppercase;letter-spacing:.08em}
+
+    /* ─────────────────────────────────
+       PANEL 3 — GIT GUIDE
+    ───────────────────────────────── */
+    .git-stage{background:var(--card);border:1px solid var(--border);
+      border-radius:10px;margin-bottom:.8rem;overflow:hidden}
+    .git-stage-header{padding:.7rem 1rem;background:var(--surface);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+    .git-stage-title{font-family:var(--ff);font-size:.85rem;font-weight:800;
+      color:var(--txt);display:flex;align-items:center;gap:.5rem}
+    .git-stage-title i{font-size:.75rem;color:var(--green)}
+    .git-stage-body{padding:.9rem 1rem;display:none}
+    .git-stage.open .git-stage-body{display:block}
+    .git-stage.open .git-chevron{transform:rotate(180deg)}
+    .git-chevron{color:var(--txt3);font-size:.7rem;transition:transform .2s}
+    .cmd-block{font-family:var(--fm);font-size:.78rem;
+      background:var(--bg);border:1px solid var(--border);
+      padding:.55rem .8rem;border-radius:6px;color:var(--green2);
+      margin:.4rem 0;cursor:pointer;display:flex;align-items:center;
+      justify-content:space-between;transition:background .12s}
+    .cmd-block:hover{background:rgba(63,185,80,.05)}
+    .cmd-block .copy-icon{color:var(--txt3);font-size:.65rem;flex-shrink:0}
+    .git-note{font-size:.78rem;color:var(--txt2);line-height:1.6;margin-bottom:.5rem}
+    .git-note strong{color:var(--green2)}
+    .git-note .warn{color:var(--yellow)}
+    .fear-tag{display:inline-block;font-family:var(--fm);font-size:.58rem;
+      color:var(--yellow);background:rgba(227,179,65,.1);border:1px solid rgba(227,179,65,.25);
+      padding:2px 8px;border-radius:3px;margin-bottom:.5rem}
+
+    /* ─────────────────────────────────
+       PANEL 4 — HOSTING GUIDE
+    ───────────────────────────────── */
+    .host-card{background:var(--card);border:1px solid var(--border2);
+      border-radius:10px;padding:1rem;margin-bottom:.7rem;cursor:pointer;
+      transition:all .15s;position:relative}
+    .host-card:hover,.host-card.active{border-color:var(--green);background:rgba(63,185,80,.04)}
+    .host-card.active::before{content:'';position:absolute;left:0;top:0;bottom:0;
+      width:3px;background:var(--green);border-radius:3px 0 0 3px}
+    .host-name{font-family:var(--ff);font-size:.9rem;font-weight:800;margin-bottom:.2rem;
+      display:flex;align-items:center;gap:.5rem}
+    .host-desc{font-size:.78rem;color:var(--txt2);margin-bottom:.5rem}
+    .host-steps{display:none;margin-top:.7rem;padding-top:.7rem;
+      border-top:1px solid var(--border)}
+    .host-card.active .host-steps{display:block}
+
+    /* ─────────────────────────────────
+       PANEL 5 — DEBUG HELPER
+    ───────────────────────────────── */
+    .error-type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.4rem;
+      margin-bottom:.8rem}
+    .error-chip{padding:.5rem .7rem;border-radius:7px;border:1px solid var(--border2);
+      background:var(--surface);color:var(--txt2);font-family:var(--fm);
+      font-size:.6rem;cursor:pointer;text-align:center;transition:all .12s;
+      display:flex;flex-direction:column;align-items:center;gap:.25rem}
+    .error-chip i{font-size:.9rem;color:var(--txt3);transition:color .12s}
+    .error-chip:hover,.error-chip.on{border-color:var(--red);color:var(--red);
+      background:rgba(255,123,114,.06)}
+    .error-chip:hover i,.error-chip.on i{color:var(--red)}
+
+    /* ─────────────────────────────────
+       PANEL 6 — PORTFOLIO CHECKER
+    ───────────────────────────────── */
+    .check-item{display:flex;align-items:center;justify-content:space-between;
+      padding:.6rem .8rem;background:var(--surface);border:1px solid var(--border);
+      border-radius:7px;margin-bottom:.4rem;cursor:pointer;transition:all .12s}
+    .check-item:hover{border-color:var(--border2)}
+    .check-left{display:flex;align-items:center;gap:.6rem;flex:1}
+    .check-icon{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);
+      display:flex;align-items:center;justify-content:center;
+      font-size:.55rem;color:transparent;transition:all .15s;flex-shrink:0}
+    .check-item.done .check-icon{background:var(--green);border-color:var(--green);color:#0d1117}
+    .check-item.miss .check-icon{border-color:var(--red)}
+    .check-label{font-size:.82rem;color:var(--txt)}
+    .check-item.done .check-label{color:var(--txt2)}
+    .check-tip{font-family:var(--fm);font-size:.58rem;color:var(--txt3)}
+    .score-ring{width:80px;height:80px;flex-shrink:0}
+    .score-ring circle{fill:none;stroke-linecap:round}
+    .score-ring .track{stroke:var(--border)}
+    .score-ring .fill{stroke:var(--green);transition:stroke-dashoffset 1s var(--spring)}
+
+    /* ─────────────────────────────────
+       PANEL 7 — INTERVIEW PREP
+    ───────────────────────────────── */
+    .interview-qa{background:var(--card);border:1px solid var(--border);
+      border-radius:10px;margin-bottom:.7rem;overflow:hidden}
+    .iq-header{padding:.7rem 1rem;cursor:pointer;display:flex;align-items:center;
+      justify-content:space-between;background:var(--surface)}
+    .iq-q{font-size:.85rem;color:var(--txt);font-weight:500;flex:1}
+    .iq-body{padding:.8rem 1rem;font-size:.82rem;color:var(--txt2);
+      line-height:1.7;display:none;border-top:1px solid var(--border)}
+    .interview-qa.open .iq-body{display:block}
+    .interview-qa.open .iq-chev{transform:rotate(180deg)}
+    .iq-chev{color:var(--txt3);font-size:.7rem;transition:transform .2s;flex-shrink:0}
+
+    /* ─────────────────────────────────
+       ONBOARDING
+    ───────────────────────────────── */
+    #onboarding{position:fixed;inset:0;z-index:500;background:var(--bg);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:1.2rem;padding:1.5rem;text-align:center;transition:opacity .4s}
+    #onboarding.gone{opacity:0;pointer-events:none}
+    .ob-logo{width:60px;height:60px;border-radius:14px;background:var(--green);
+      display:flex;align-items:center;justify-content:center;
+      font-family:var(--ff);font-size:1.5rem;font-weight:800;color:#0d1117;
+      box-shadow:0 0 28px rgba(63,185,80,.4);animation:ob-p 2s ease-in-out infinite}
+    @keyframes ob-p{0%,100%{box-shadow:0 0 20px rgba(63,185,80,.3)}50%{box-shadow:0 0 40px rgba(63,185,80,.6)}}
+    .ob-title{font-family:var(--ff);font-size:clamp(2rem,6vw,3.2rem);
+      font-weight:800;color:var(--txt);text-transform:uppercase;line-height:.9}
+    .ob-title span{color:var(--green)}
+    .ob-desc{font-family:var(--fb);font-size:.9rem;color:var(--txt2);
+      max-width:400px;line-height:1.7}
+    .ob-desc strong{color:var(--green)}
+    .ob-step{width:100%;max-width:460px;display:none;flex-direction:column;gap:.7rem;
+      animation:fade-in .3s var(--spring)}
+    .ob-step.active{display:flex}
+    .ob-lbl{font-family:var(--fm);font-size:.56rem;color:var(--green);
+      text-transform:uppercase;letter-spacing:.15em;display:flex;align-items:center;gap:.35rem}
+    .ob-chips{display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center}
+    .ob-chip{padding:.45rem .9rem;border-radius:7px;border:1px solid var(--border2);
+      background:var(--surface);color:var(--txt2);font-family:var(--fb);font-size:.78rem;
+      cursor:pointer;transition:all .15s;user-select:none}
+    .ob-chip:hover{border-color:var(--green);color:var(--txt)}
+    .ob-chip.on{background:rgba(63,185,80,.1);border-color:var(--green);color:var(--green)}
+    .ob-input{width:100%;padding:.75rem 1rem;border-radius:8px;
+      border:1px solid var(--border2);background:var(--card);
+      color:var(--txt);font-family:var(--fb);font-size:.9rem;outline:none;
+      transition:border-color .15s,box-shadow .15s}
+    .ob-input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(63,185,80,.1)}
+    .ob-input::placeholder{color:var(--txt3)}
+    .ob-btn{padding:.8rem 2.2rem;border-radius:9px;
+      border:2px solid var(--green);background:var(--green);
+      color:#0d1117;font-family:var(--ff);font-size:.95rem;font-weight:800;
+      cursor:pointer;letter-spacing:.05em;text-transform:uppercase;
+      box-shadow:3px 3px 0 rgba(63,185,80,.25);transition:all .15s var(--spring);
+      display:flex;align-items:center;gap:.45rem;margin:0 auto}
+    .ob-btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(63,185,80,.25)}
+    .ob-dots{display:flex;gap:.35rem;justify-content:center}
+    .ob-dot{width:6px;height:6px;border-radius:50%;background:var(--border2);transition:all .2s}
+    .ob-dot.active{background:var(--green);width:14px;border-radius:3px}
+
+    /* footer */
+    .footer{font-family:var(--fm);font-size:.5rem;color:var(--txt3);
+      text-align:center;padding:.25rem;flex-shrink:0}
+    .footer a{color:var(--green);text-decoration:none}
+  </style>
 </head>
 <body>
 <div id="cursor"></div>
@@ -17,29 +445,24 @@
   <div class="ob-logo">S</div>
   <div>
     <div class="ob-title">START<span>.exe</span></div>
-    <div class="ob-sub">Tera Personal Coding Bhaiya</div>
+    <div style="font-family:var(--fm);font-size:.58rem;color:var(--txt3);letter-spacing:.15em;text-transform:uppercase;margin-top:.3rem">Tera Personal Coding Bhaiya</div>
   </div>
-  <p class="ob-desc">
-    Bhai, <strong>koi bhi project banao</strong> — idea se lekar GitHub pe daalne aur hosting tak,
-    main har step pe saath hoon. Ek dost ki tarah, lecture nahi dunga. 😄
-  </p>
+  <p class="ob-desc">Bhai, idea se lekar <strong>GitHub aur hosting</strong> tak — har cheez mein guide karunga. Ek dost ki tarah, lecture nahi. 😄</p>
 
-  <!-- STEP 1: Language -->
-  <div class="ob-step active" id="ob-1">
-    <div class="ob-step-label"><i class="fa-solid fa-language"></i> Pehle bata — kaunsi bhasha?</div>
-    <div class="ob-chips-wrap">
-      <div class="ob-chip on" data-lang="hinglish" onclick="pickLang(this)">🇮🇳 Hinglish (Mix)</div>
-      <div class="ob-chip" data-lang="english" onclick="pickLang(this)">🇬🇧 English Only</div>
+  <!-- Step 1: Language -->
+  <div class="ob-step active" id="obs1">
+    <div class="ob-lbl"><i class="fa-solid fa-language"></i> Kaunsi bhasha?</div>
+    <div class="ob-chips">
+      <div class="ob-chip on" data-lang="hinglish" onclick="pickLang(this)">🇮🇳 Hinglish</div>
+      <div class="ob-chip" data-lang="english" onclick="pickLang(this)">🇬🇧 English</div>
     </div>
-    <button class="ob-btn" onclick="obNext(2)">
-      <i class="fa-solid fa-arrow-right"></i> Next
-    </button>
+    <button class="ob-btn" onclick="obGo(2)"><i class="fa-solid fa-arrow-right"></i> Next</button>
   </div>
 
-  <!-- STEP 2: Skills -->
-  <div class="ob-step" id="ob-2">
-    <div class="ob-step-label"><i class="fa-solid fa-code"></i> Tujhe kya kya aata hai? (sab select kar)</div>
-    <div class="ob-chips-wrap" id="skills-chips">
+  <!-- Step 2: Skills -->
+  <div class="ob-step" id="obs2">
+    <div class="ob-lbl"><i class="fa-solid fa-code"></i> Tujhe kya aata hai? (sab select kar)</div>
+    <div class="ob-chips" id="sk-chips">
       <div class="ob-chip" data-s="html">HTML</div>
       <div class="ob-chip" data-s="css">CSS</div>
       <div class="ob-chip" data-s="javascript">JavaScript</div>
@@ -49,44 +472,41 @@
       <div class="ob-chip" data-s="react">React</div>
       <div class="ob-chip" data-s="nodejs">Node.js</div>
       <div class="ob-chip" data-s="sql">SQL</div>
-      <div class="ob-chip" data-s="git">Git (basic)</div>
-      <div class="ob-chip" data-s="nothing">Kuch nahi aata abhi</div>
+      <div class="ob-chip" data-s="git">Git</div>
+      <div class="ob-chip" data-s="nothing">Kuch nahi aata</div>
     </div>
-    <button class="ob-btn" onclick="obNext(3)">
-      <i class="fa-solid fa-arrow-right"></i> Next
-    </button>
+    <button class="ob-btn" onclick="obGo(3)"><i class="fa-solid fa-arrow-right"></i> Next</button>
   </div>
 
-  <!-- STEP 3: Goal -->
-  <div class="ob-step" id="ob-3">
-    <div class="ob-step-label"><i class="fa-solid fa-bullseye"></i> Aaj kya karna hai?</div>
-    <div class="ob-chips-wrap" id="goal-chips">
-      <div class="ob-chip" data-g="idea">💡 Project idea chahiye</div>
-      <div class="ob-chip" data-g="build">🔨 Project banana hai</div>
-      <div class="ob-chip" data-g="github">🐙 GitHub pe daalna hai</div>
-      <div class="ob-chip" data-g="host">🌐 Website host karni hai</div>
-      <div class="ob-chip" data-g="all">🚀 Sab kuch — start to finish</div>
+  <!-- Step 3: Problem -->
+  <div class="ob-step" id="obs3">
+    <div class="ob-lbl"><i class="fa-solid fa-circle-exclamation"></i> Biggest problem kya hai?</div>
+    <div class="ob-chips" id="prob-chips">
+      <div class="ob-chip" data-p="idea">💡 Idea hi nahi milta</div>
+      <div class="ob-chip" data-p="start">🤯 Shuru kaise karu pata nahi</div>
+      <div class="ob-chip" data-p="build">🔨 Code likhna hai</div>
+      <div class="ob-chip" data-p="github">🐙 GitHub samajh nahi aata</div>
+      <div class="ob-chip" data-p="host">🌐 Hosting kaise karu</div>
+      <div class="ob-chip" data-p="debug">🐛 Errors fix nahi hoti</div>
+      <div class="ob-chip" data-p="portfolio">📂 Portfolio weak hai</div>
+      <div class="ob-chip" data-p="interview">💼 Interview ready nahi hun</div>
     </div>
-    <button class="ob-btn" onclick="obNext(4)">
-      <i class="fa-solid fa-arrow-right"></i> Next
-    </button>
+    <button class="ob-btn" onclick="obGo(4)"><i class="fa-solid fa-arrow-right"></i> Next</button>
   </div>
 
-  <!-- STEP 4: Name -->
-  <div class="ob-step" id="ob-4">
-    <div class="ob-step-label"><i class="fa-solid fa-user"></i> Tera naam kya hai bhai?</div>
-    <input class="ob-input" id="ob-name" placeholder="Apna naam likh..." maxlength="30"
-      onkeydown="if(event.key==='Enter') startChat()">
-    <button class="ob-btn" onclick="startChat()">
-      <i class="fa-solid fa-rocket"></i> Chalte Hain!
-    </button>
+  <!-- Step 4: Name -->
+  <div class="ob-step" id="obs4">
+    <div class="ob-lbl"><i class="fa-solid fa-user"></i> Tera naam?</div>
+    <input class="ob-input" id="ob-name" placeholder="Apna naam likh bhai..." maxlength="25"
+      onkeydown="if(event.key==='Enter') beginApp()">
+    <button class="ob-btn" onclick="beginApp()"><i class="fa-solid fa-rocket"></i> Chalte Hain!</button>
   </div>
 
   <div class="ob-dots">
-    <div class="ob-dot active" id="dot-1"></div>
-    <div class="ob-dot" id="dot-2"></div>
-    <div class="ob-dot" id="dot-3"></div>
-    <div class="ob-dot" id="dot-4"></div>
+    <div class="ob-dot active" id="od1"></div>
+    <div class="ob-dot" id="od2"></div>
+    <div class="ob-dot" id="od3"></div>
+    <div class="ob-dot" id="od4"></div>
   </div>
 </div>
 
@@ -95,41 +515,48 @@
   <a class="nav-brand" href="#">
     <div class="nav-logo">S</div>
     <span class="nav-title">START.exe</span>
-    <span class="nav-tagline">— Tera Coding Bhaiya</span>
+    <span class="nav-sub">&nbsp;— Coding Bhaiya</span>
   </a>
   <div class="nav-right">
     <div class="lang-toggle">
-      <button class="lang-btn active" id="lng-hi" onclick="setLang('hinglish')">HI</button>
-      <button class="lang-btn" id="lng-en" onclick="setLang('english')">EN</button>
+      <button class="lang-btn active" id="lhi" onclick="setLang('hinglish')">HI</button>
+      <button class="lang-btn" id="len" onclick="setLang('english')">EN</button>
     </div>
     <a class="nav-link" href="https://github.com/instai4" target="_blank"><i class="fa-brands fa-github"></i></a>
     <a class="nav-link" href="https://instai4.github.io/PORT-FOLIO/" target="_blank"><i class="fa-solid fa-globe"></i></a>
   </div>
 </nav>
 
+<!-- ── TAB BAR ── -->
+<div class="tab-bar" id="tab-bar">
+  <button class="tab-btn active" data-tab="chat" onclick="goTab('chat')"><i class="fa-solid fa-comments"></i> Bhaiya Chat</button>
+  <button class="tab-btn" data-tab="idea" onclick="goTab('idea')"><i class="fa-solid fa-lightbulb"></i> Idea</button>
+  <button class="tab-btn" data-tab="builder" onclick="goTab('builder')"><i class="fa-solid fa-hammer"></i> Builder</button>
+  <button class="tab-btn" data-tab="git" onclick="goTab('git')"><i class="fa-brands fa-git-alt"></i> Git Guide</button>
+  <button class="tab-btn" data-tab="host" onclick="goTab('host')"><i class="fa-solid fa-globe"></i> Hosting</button>
+  <button class="tab-btn" data-tab="debug" onclick="goTab('debug')"><i class="fa-solid fa-bug"></i> Debug</button>
+  <button class="tab-btn" data-tab="portfolio" onclick="goTab('portfolio')"><i class="fa-solid fa-briefcase"></i> Portfolio</button>
+  <button class="tab-btn" data-tab="interview" onclick="goTab('interview')"><i class="fa-solid fa-user-tie"></i> Interview</button>
+</div>
+
 <!-- ── MAIN ── -->
 <div class="main">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sb-header">
-      <div class="sb-title"><i class="fa-solid fa-map"></i> Roadmap</div>
-      <div class="sb-progress" id="sb-prog-txt">0%</div>
-    </div>
-    <div class="sb-prog-bar"><div class="sb-prog-fill" id="sb-prog-fill"></div></div>
-    <div class="sb-scroll" id="sb-steps">
-      <!-- filled dynamically -->
-    </div>
-  </div>
-
-  <!-- CHAT -->
-  <div class="chat-wrap">
-    <div class="messages" id="messages"></div>
-    <div class="input-wrap">
-      <div class="input-row">
-        <textarea id="chat-input" placeholder="Kuch bhi puch bhai... 😄" rows="1"
-          onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
-        <button class="send-btn" id="send-btn" onclick="sendMessage()">
+  <!-- ── PANEL: CHAT ── -->
+  <div class="panel active" id="panel-chat">
+    <div class="chat-messages" id="chat-msgs"></div>
+    <div class="chat-input-wrap">
+      <div class="module-shortcuts" id="mod-shortcuts">
+        <div class="mshort" onclick="goTab('idea')"><i class="fa-solid fa-lightbulb"></i> Idea</div>
+        <div class="mshort" onclick="goTab('git')"><i class="fa-brands fa-git-alt"></i> Git</div>
+        <div class="mshort" onclick="goTab('host')"><i class="fa-solid fa-globe"></i> Host</div>
+        <div class="mshort" onclick="goTab('debug')"><i class="fa-solid fa-bug"></i> Debug</div>
+        <div class="mshort" onclick="goTab('portfolio')"><i class="fa-solid fa-briefcase"></i> Portfolio</div>
+      </div>
+      <div class="chat-input-row">
+        <textarea id="ci" placeholder="Kuch bhi puch bhai... 😄" rows="1"
+          onkeydown="chatKey(event)" oninput="chatResize(this)"></textarea>
+        <button class="send" id="send-btn" onclick="chatSend()">
           <i class="fa-solid fa-paper-plane"></i>
         </button>
       </div>
@@ -137,13 +564,1001 @@
     </div>
   </div>
 
-</div>
+  <!-- ── PANEL: IDEA GENERATOR ── -->
+  <div class="panel" id="panel-idea">
+    <div class="panel-scroll">
+      <div class="sec-title">💡 Project Idea Generator</div>
+      <div class="sec-sub">TERI SKILLS KE HISAAB SE IDEAS — NO TUTORIAL HELL</div>
+      <div class="card green">
+        <div class="label"><i class="fa-solid fa-code"></i> Teri skills</div>
+        <div class="chip-wrap" id="idea-skills"></div>
+        <div class="label" style="margin-top:.5rem"><i class="fa-solid fa-gauge"></i> Difficulty</div>
+        <div class="chip-wrap">
+          <div class="chip on" data-d="beginner" onclick="pickDiff(this)">🟢 Beginner</div>
+          <div class="chip" data-d="intermediate" onclick="pickDiff(this)">🟡 Intermediate</div>
+          <div class="chip" data-d="advanced" onclick="pickDiff(this)">🔴 Advanced</div>
+        </div>
+        <div class="label" style="margin-top:.5rem"><i class="fa-solid fa-tag"></i> Category (optional)</div>
+        <div class="chip-wrap">
+          <div class="chip" data-c="web" onclick="toggleCat(this)">🌐 Web App</div>
+          <div class="chip" data-c="game" onclick="toggleCat(this)">🎮 Game</div>
+          <div class="chip" data-c="tool" onclick="toggleCat(this)">🛠️ Tool</div>
+          <div class="chip" data-c="data" onclick="toggleCat(this)">📊 Data</div>
+          <div class="chip" data-c="api" onclick="toggleCat(this)">🔌 API Project</div>
+          <div class="chip" data-c="automation" onclick="toggleCat(this)">⚡ Automation</div>
+        </div>
+        <button class="action-btn" style="margin-top:.8rem;width:100%" onclick="genIdeas()" id="idea-btn">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Ideas
+        </button>
+      </div>
+      <div id="idea-output"></div>
+    </div>
+  </div>
 
-<div class="footer-credit">
-  Built with ❤️ by <a href="https://instai4.github.io/PORT-FOLIO/" target="_blank">Anurag Rajput</a>
-  &nbsp;·&nbsp; Data Science Student @ DBUU
-</div>
+  <!-- ── PANEL: BUILDER ── -->
+  <div class="panel" id="panel-builder">
+    <div class="panel-scroll">
+      <div class="sec-title">🔨 Project Builder</div>
+      <div class="sec-sub">IDEA → FEATURES → TASKS → DONE</div>
+      <div class="card blue">
+        <div class="label"><i class="fa-solid fa-pen"></i> Apna project describe kar</div>
+        <textarea id="build-input" placeholder="e.g. Ek weather app banana hai jo city name se weather dikhaye" rows="3" style="margin-bottom:.6rem"></textarea>
+        <div class="label"><i class="fa-solid fa-code"></i> Tech stack</div>
+        <input type="text" id="build-tech" placeholder="e.g. HTML, CSS, JavaScript, OpenWeather API" style="margin-bottom:.6rem">
+        <button class="action-btn" style="width:100%" onclick="genBuilder()" id="build-btn">
+          <i class="fa-solid fa-list-check"></i> Break it into Tasks
+        </button>
+      </div>
+      <div id="build-output"></div>
+    </div>
+  </div>
 
-<script src="script.js"></script>
+  <!-- ── PANEL: GIT GUIDE ── -->
+  <div class="panel" id="panel-git">
+    <div class="panel-scroll">
+      <div class="sec-title">🐙 Git & GitHub Guide</div>
+      <div class="sec-sub">STEP BY STEP — COPY KARO AUR RUN KARO</div>
+
+      <!-- fear buster -->
+      <div class="card yellow" style="margin-bottom:1rem">
+        <div style="font-size:.82rem;color:var(--txt);line-height:1.6">
+          <strong style="color:var(--yellow)">😤 Git se darta hai?</strong> Normal hai bhai. Pehli baar sabko dara tha.
+          Ye guide follow kar — ek baar kiya toh hamesha yaad rahega. Koi bhi command galat nahi jaayegi agar ye steps follow kare.
+        </div>
+      </div>
+
+      <div class="git-stage open" id="gs1">
+        <div class="git-stage-header" onclick="toggleStage('gs1')">
+          <div class="git-stage-title"><i class="fa-solid fa-download"></i> Step 1: Git Install karo</div>
+          <i class="fa-solid fa-chevron-down git-chevron"></i>
+        </div>
+        <div class="git-stage-body">
+          <div class="fear-tag">⚡ One-time setup — sirf ek baar karna hai</div>
+          <div class="git-note">Pehle check kar ki already installed hai ya nahi:</div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git --version</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="git-note">Agar version number aaye — already installed hai! Agar nahi aaya:</div>
+          <div class="git-note"><strong>Windows:</strong> <a href="https://git-scm.com/download/win" target="_blank" style="color:var(--blue)">git-scm.com</a> se download karo</div>
+          <div class="git-note"><strong>Mac:</strong></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>brew install git</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="git-note"><strong>Ubuntu/Linux:</strong></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>sudo apt install git</span><i class="fa-regular fa-copy copy-icon"></i></div>
+        </div>
+      </div>
+
+      <div class="git-stage" id="gs2">
+        <div class="git-stage-header" onclick="toggleStage('gs2')">
+          <div class="git-stage-title"><i class="fa-solid fa-user-gear"></i> Step 2: Git Setup (pehli baar)</div>
+          <i class="fa-solid fa-chevron-down git-chevron"></i>
+        </div>
+        <div class="git-stage-body">
+          <div class="fear-tag">⚡ One-time — apna naam aur email daalo</div>
+          <div class="git-note">Apna naam aur email set karo (GitHub wala use karo):</div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git config --global user.name "Tera Naam"</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git config --global user.email "tera@email.com"</span><i class="fa-regular fa-copy copy-icon"></i></div>
+        </div>
+      </div>
+
+      <div class="git-stage" id="gs3">
+        <div class="git-stage-header" onclick="toggleStage('gs3')">
+          <div class="git-stage-title"><i class="fa-solid fa-folder-plus"></i> Step 3: Naya Repo shuru karo</div>
+          <i class="fa-solid fa-chevron-down git-chevron"></i>
+        </div>
+        <div class="git-stage-body">
+          <div class="git-note">Project folder mein jaao:</div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>cd tera-project-folder</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="git-note">Git initialize karo:</div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git init</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="git-note" style="color:var(--green2)">✅ Ab tera folder ek Git repository ban gaya!</div>
+        </div>
+      </div>
+
+      <div class="git-stage" id="gs4">
+        <div class="git-stage-header" onclick="toggleStage('gs4')">
+          <div class="git-stage-title"><i class="fa-solid fa-code-commit"></i> Step 4: Files add karo & Commit</div>
+          <i class="fa-solid fa-chevron-down git-chevron"></i>
+        </div>
+        <div class="git-stage-body">
+          <div class="git-note"><strong>Sabhi files add karo:</strong></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git add .</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="git-note"><strong>Commit karo (message likhna zaroori hai):</strong></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git commit -m "Initial commit"</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="git-note"><span class="warn">⚠️ Kya upload nahi karna?</span> .env files, node_modules, passwords. Iske liye .gitignore file banao.</div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>echo "node_modules/" >> .gitignore</span><i class="fa-regular fa-copy copy-icon"></i></div>
+        </div>
+      </div>
+
+      <div class="git-stage" id="gs5">
+        <div class="git-stage-header" onclick="toggleStage('gs5')">
+          <div class="git-stage-title"><i class="fa-brands fa-github"></i> Step 5: GitHub pe Push karo</div>
+          <i class="fa-solid fa-chevron-down git-chevron"></i>
+        </div>
+        <div class="git-stage-body">
+          <div class="git-note">1. <a href="https://github.com/new" target="_blank" style="color:var(--blue)">github.com/new</a> jaao — naya repo banao (Initialize WITHOUT README)</div>
+          <div class="git-note">2. GitHub jo URL dega woh copy kar, phir:</div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git remote add origin https://github.com/username/repo-name.git</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git push -u origin main</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="git-note" style="color:var(--green2)">✅ Tera code ab GitHub pe hai! 🎉</div>
+        </div>
+      </div>
+
+      <div class="git-stage" id="gs6">
+        <div class="git-stage-header" onclick="toggleStage('gs6')">
+          <div class="git-stage-title"><i class="fa-solid fa-rotate"></i> Daily Workflow</div>
+          <i class="fa-solid fa-chevron-down git-chevron"></i>
+        </div>
+        <div class="git-stage-body">
+          <div class="git-note">Har baar code change karne ke baad ye 3 commands:</div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git add .</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git commit -m "Kya change kiya likho yahan"</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git push</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="git-note" style="margin-top:.5rem"><strong>Status check karna ho toh:</strong></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git status</span><i class="fa-regular fa-copy copy-icon"></i></div>
+          <div class="cmd-block" onclick="copyCmd(this)"><span>git log --oneline</span><i class="fa-regular fa-copy copy-icon"></i></div>
+        </div>
+      </div>
+
+      <!-- AI README generator -->
+      <div class="card green" style="margin-top:1rem">
+        <div class="label"><i class="fa-solid fa-file-lines"></i> README Generator</div>
+        <div style="font-size:.8rem;color:var(--txt2);margin-bottom:.6rem">Project ka naam aur kya karta hai likh — main README generate kar dunga</div>
+        <input type="text" id="readme-name" placeholder="Project name, e.g. Weather App" style="margin-bottom:.5rem">
+        <textarea id="readme-desc" placeholder="Kya karta hai ye project? Kya features hain?" rows="2" style="margin-bottom:.5rem"></textarea>
+        <button class="action-btn" style="width:100%" onclick="genReadme()" id="readme-btn">
+          <i class="fa-solid fa-magic"></i> Generate README
+        </button>
+        <div class="output-box" id="readme-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL: HOSTING ── -->
+  <div class="panel" id="panel-host">
+    <div class="panel-scroll">
+      <div class="sec-title">🌐 Hosting Guide</div>
+      <div class="sec-sub">PLATFORM CHOOSE KAR — STEP BY STEP DEPLOY KAR</div>
+
+      <div class="label" style="margin-bottom:.6rem"><i class="fa-solid fa-question-circle"></i> Tera project kya hai?</div>
+      <div class="chip-wrap" style="margin-bottom:1rem">
+        <div class="chip on" data-ht="static" onclick="pickHostType(this)">🌐 HTML/CSS/JS (Static)</div>
+        <div class="chip" data-ht="react" onclick="pickHostType(this)">⚛️ React / Vite</div>
+        <div class="chip" data-ht="node" onclick="pickHostType(this)">🟢 Node.js Backend</div>
+        <div class="chip" data-ht="python" onclick="pickHostType(this)">🐍 Python / Flask</div>
+        <div class="chip" data-ht="fullstack" onclick="pickHostType(this)">🚀 Full Stack</div>
+      </div>
+
+      <div id="host-options"></div>
+    </div>
+  </div>
+
+  <!-- ── PANEL: DEBUG ── -->
+  <div class="panel" id="panel-debug">
+    <div class="panel-scroll">
+      <div class="sec-title">🐛 Debug Helper</div>
+      <div class="sec-sub">ERROR PASTE KAR — FIX MILEGA</div>
+      <div class="card red">
+        <div class="label" style="margin-bottom:.5rem"><i class="fa-solid fa-triangle-exclamation"></i> Error type (optional)</div>
+        <div class="error-type-grid">
+          <div class="error-chip" data-e="syntax" onclick="pickErr(this)"><i class="fa-solid fa-code"></i>Syntax Error</div>
+          <div class="error-chip" data-e="runtime" onclick="pickErr(this)"><i class="fa-solid fa-bolt"></i>Runtime Error</div>
+          <div class="error-chip" data-e="cors" onclick="pickErr(this)"><i class="fa-solid fa-shield-halved"></i>CORS Error</div>
+          <div class="error-chip" data-e="npm" onclick="pickErr(this)"><i class="fa-brands fa-npm"></i>npm Error</div>
+          <div class="error-chip" data-e="git" onclick="pickErr(this)"><i class="fa-brands fa-git-alt"></i>Git Error</div>
+          <div class="error-chip" data-e="api" onclick="pickErr(this)"><i class="fa-solid fa-plug"></i>API Error</div>
+          <div class="error-chip" data-e="deploy" onclick="pickErr(this)"><i class="fa-solid fa-server"></i>Deploy Error</div>
+          <div class="error-chip" data-e="other" onclick="pickErr(this)"><i class="fa-solid fa-circle-question"></i>Other</div>
+        </div>
+        <div class="label"><i class="fa-solid fa-paste"></i> Error message paste kar</div>
+        <textarea id="err-input" placeholder="Poori error yahan paste kar bhai... Console se copy karke lao" rows="4" style="margin-bottom:.5rem"></textarea>
+        <div class="label"><i class="fa-solid fa-align-left"></i> Code snippet (optional — helps more)</div>
+        <textarea id="code-input" placeholder="Jis line pe error aa rahi hai woh code yahan daalo..." rows="3" style="margin-bottom:.6rem"></textarea>
+        <button class="action-btn" style="width:100%" onclick="debugIt()" id="debug-btn">
+          <i class="fa-solid fa-magnifying-glass-plus"></i> Fix Dhundo
+        </button>
+        <div class="output-box" id="debug-out"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL: PORTFOLIO ── -->
+  <div class="panel" id="panel-portfolio">
+    <div class="panel-scroll">
+      <div class="sec-title">📂 Portfolio Checker</div>
+      <div class="sec-sub">KYA MISSING HAI — KYA IMPROVE KARNA HAI</div>
+
+      <div style="display:flex;gap:.8rem;align-items:flex-start;flex-wrap:wrap;margin-bottom:1rem">
+        <div style="flex:1;min-width:200px">
+          <div class="label"><i class="fa-brands fa-github"></i> GitHub username</div>
+          <div style="display:flex;gap:.4rem">
+            <input type="text" id="gh-user" placeholder="instai4" style="margin-bottom:0">
+            <button class="action-btn" style="white-space:nowrap;padding:.7rem 1rem" onclick="checkPortfolio()" id="port-btn">
+              <i class="fa-solid fa-search"></i> Check
+            </button>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <svg class="score-ring" viewBox="0 0 80 80" id="score-svg">
+            <circle class="track" cx="40" cy="40" r="32" stroke-width="6"/>
+            <circle class="fill" cx="40" cy="40" r="32" stroke-width="6"
+              stroke-dasharray="201" stroke-dashoffset="201"
+              transform="rotate(-90 40 40)" id="score-arc"/>
+          </svg>
+          <div style="font-family:var(--ff);font-size:1.2rem;font-weight:800;color:var(--green);margin-top:-.5rem" id="score-val">?</div>
+          <div style="font-family:var(--fm);font-size:.52rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em">Score</div>
+        </div>
+      </div>
+
+      <div id="portfolio-checks">
+        <!-- static checklist -->
+        <div class="label" style="margin-bottom:.5rem"><i class="fa-solid fa-list-check"></i> Portfolio Checklist</div>
+        <div id="check-list"></div>
+      </div>
+
+      <div id="portfolio-ai-out" class="output-box" style="margin-top:.8rem"></div>
+    </div>
+  </div>
+
+  <!-- ── PANEL: INTERVIEW ── -->
+  <div class="panel" id="panel-interview">
+    <div class="panel-scroll">
+      <div class="sec-title">💼 Interview Prep</div>
+      <div class="sec-sub">PROJECTS SE INTERVIEWS CRACK KARO</div>
+
+      <div class="card green" style="margin-bottom:1rem">
+        <div style="font-size:.85rem;color:var(--txt);line-height:1.6">
+          <strong style="color:var(--green)">Bhai sun,</strong> interviewer sirf code nahi dekhta —
+          woh dekhta hai ki tu <strong>problems solve kar sakta hai ya nahi</strong>.
+          Tera GitHub profile = tera resume. Niche waale questions interview mein definitely aate hain.
+        </div>
+      </div>
+
+      <div id="iq-list"></div>
+
+      <div class="card blue" style="margin-top:1rem">
+        <div class="label"><i class="fa-solid fa-robot"></i> Custom Interview Prep</div>
+        <div style="font-size:.78rem;color:var(--txt2);margin-bottom:.5rem">Apna project describe kar — main interview questions generate karunga</div>
+        <textarea id="iv-project" placeholder="e.g. Maine ek weather app banaya hai HTML CSS JS se. OpenWeather API use ki hai." rows="3" style="margin-bottom:.5rem"></textarea>
+        <button class="action-btn" style="width:100%" onclick="genInterview()" id="iv-btn">
+          <i class="fa-solid fa-comments"></i> Generate Questions
+        </button>
+        <div class="output-box" id="iv-out"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .main -->
+
+<div class="footer">Built with ❤️ by <a href="https://instai4.github.io/PORT-FOLIO/" target="_blank">Anurag Rajput</a> · Data Science Student @ DBUU</div>
+
+<script>
+/* ── CURSOR ── */
+const cur = document.getElementById('cursor');
+document.addEventListener('mousemove', e => { cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px'; });
+
+/* ── GLOBAL STATE ── */
+let uLang = 'hinglish', uSkills = [], uProblem = '', uName = '';
+let chatHistory = [], isBusy = false;
+let obCurrent = 1;
+
+/* ═══════════════ ONBOARDING ═══════════════ */
+function pickLang(el) {
+  document.querySelectorAll('[data-lang]').forEach(c => c.classList.remove('on'));
+  el.classList.add('on'); uLang = el.dataset.lang;
+}
+function obGo(n) {
+  if (n === 3) {
+    uSkills = [...document.querySelectorAll('#sk-chips .ob-chip.on')].map(c => c.dataset.s);
+    if (!uSkills.length) { alert('Bhai kuch toh select kar!'); return; }
+  }
+  document.getElementById('obs'+obCurrent).classList.remove('active');
+  document.getElementById('od'+obCurrent).classList.remove('active');
+  obCurrent = n;
+  document.getElementById('obs'+n).classList.add('active');
+  document.getElementById('od'+n).classList.add('active');
+}
+document.querySelectorAll('#sk-chips .ob-chip').forEach(c => c.addEventListener('click', () => {
+  if (c.dataset.s === 'nothing') document.querySelectorAll('#sk-chips .ob-chip').forEach(x => x.classList.remove('on'));
+  else document.querySelector('[data-s="nothing"]')?.classList.remove('on');
+  c.classList.toggle('on');
+}));
+document.querySelectorAll('#prob-chips .ob-chip').forEach(c => c.addEventListener('click', () => {
+  document.querySelectorAll('#prob-chips .ob-chip').forEach(x => x.classList.remove('on'));
+  c.classList.add('on'); uProblem = c.dataset.p;
+}));
+
+function beginApp() {
+  uName = document.getElementById('ob-name').value.trim() || 'Bhai';
+  if (!uProblem) { alert('Pehle apni problem select kar!'); return; }
+  const ob = document.getElementById('onboarding');
+  ob.classList.add('gone');
+  setTimeout(() => ob.style.display='none', 400);
+  initApp();
+}
+
+/* ─── INIT ─── */
+function initApp() {
+  // Populate idea skills
+  const sk = document.getElementById('idea-skills');
+  const toShow = uSkills.includes('nothing') ? ['html','css','javascript'] : uSkills;
+  sk.innerHTML = toShow.map(s => `<div class="chip on" data-s="${s}" onclick="this.classList.toggle('on')">${s.toUpperCase()}</div>`).join('');
+
+  // Portfolio checklist
+  renderPortfolioChecklist();
+  // Interview questions
+  renderInterviewQA();
+  // Hosting options
+  renderHosting('static');
+
+  // First chat greeting
+  const skillStr = uSkills.includes('nothing') ? 'abhi seekhna shuru kar raha hai' : uSkills.join(', ');
+  const probMap = { idea:'project idea nahi milta', start:'shuru karna nahi aata', build:'code karna hai', github:'GitHub samajh nahi aata', host:'hosting nahi aati', debug:'errors fix nahi hoti', portfolio:'portfolio weak hai', interview:'interview ready nahi hun' };
+  const firstMsg = `User ka naam: ${uName}\nSkills: ${skillStr}\nMain problem: ${probMap[uProblem] || uProblem}\nLanguage: ${uLang}\n\nUser aaya hai. Unhe warm greet karo by name, apna introduction do as START.exe (coding bhaiya), aur unki main problem pe focus karo. Short raho — 3-4 sentences max. Phir ek simple question pucho jo conversation shuru kare.`;
+  aiCall(firstMsg, true);
+}
+
+/* ═══════════════ TABS ═══════════════ */
+function goTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id==='panel-'+name));
+}
+
+/* ═══════════════ CHAT ═══════════════ */
+function buildSystem() {
+  const sl = uSkills.includes('nothing') ? 'no coding skills yet, total beginner' : uSkills.join(', ');
+  const li = uLang === 'hinglish'
+    ? `HINGLISH mein baat kar — Hindi + English natural mix. "Bhai", "yaar", "dekh", "ek kaam kar", "chill" use karo. Ekdum dost jaisi baat. Kabhi lecture mat dena.`
+    : `Simple friendly English. Like a helpful senior friend. Short sentences. No jargon without explaining.`;
+  return `You are START.exe — a warm, friendly senior coding brother who helps Indian college students go from zero to deploying real projects.
+
+PERSONALITY: ${li}
+- Never condescending. Always encouraging. If they're stuck, say "arre bhai normal hai, aisa sabke saath hota hai"
+- Max 4-5 short paragraphs per response. No walls of text.
+- Put ALL commands in code blocks
+- End with next step or a question
+- Use emojis naturally (not excessively)
+- When referring to modules, say "Git Guide tab mein jao" or "Idea Generator use karo"
+
+USER: ${uName} | Skills: ${sl} | Problem: ${uProblem} | Lang: ${uLang}
+
+MODULES AVAILABLE (tell user to use these when relevant):
+- 💡 Idea Generator — project ideas based on skills
+- 🔨 Builder — breaks project into tasks
+- 🐙 Git Guide — step by step git commands
+- 🌐 Hosting — deploy guide
+- 🐛 Debug — paste error get fix
+- 📂 Portfolio Checker — GitHub profile analysis
+- 💼 Interview Prep — project-based interview Qs
+
+COVER ALL 7 PROBLEM AREAS:
+1. Project ideas & breaking them down
+2. Folder structure & project setup
+3. Frontend-backend connection basics
+4. Using APIs
+5. Debugging mindset
+6. Database basics
+7. Git, GitHub, hosting, .env files, deployment errors
+8. Portfolio building & interview prep
+9. Mindset: fear of errors, perfectionism, consistency`;
+}
+
+function addMsg(role, text, qrs=[]) {
+  const msgs = document.getElementById('chat-msgs');
+  const wrap = document.createElement('div');
+  wrap.className = `msg ${role}`;
+
+  const av = document.createElement('div');
+  av.className = `av ${role === 'b' ? 'b' : 'u'}`;
+  av.textContent = role === 'b' ? 'B' : (uName?.[0]?.toUpperCase() || 'U');
+
+  const inner = document.createElement('div');
+  inner.className = 'msg-inner';
+
+  const who = document.createElement('div');
+  who.className = 'msg-who';
+  who.textContent = role === 'b' ? 'START.exe' : uName;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = fmtMsg(text);
+
+  inner.appendChild(who);
+  inner.appendChild(bubble);
+
+  if (qrs.length) {
+    const qrow = document.createElement('div');
+    qrow.className = 'qr-row';
+    qrs.forEach(r => {
+      const chip = document.createElement('div');
+      chip.className = 'qr';
+      chip.textContent = r;
+      chip.onclick = () => { document.getElementById('ci').value = r; chatSend(); qrow.remove(); };
+      qrow.appendChild(chip);
+    });
+    inner.appendChild(qrow);
+  }
+
+  wrap.appendChild(av);
+  wrap.appendChild(inner);
+  msgs.appendChild(wrap);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function fmtMsg(t) {
+  t = t.replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre>$1</pre>');
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  t = t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+  t = t.replace(/\n/g, '<br>');
+  return t;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.id = 'typing-ind';
+  d.className = 'msg b typing-b';
+  d.innerHTML = `<div class="av b">B</div><div class="typing-bubble"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function hideTyping() { document.getElementById('typing-ind')?.remove(); }
+
+async function aiCall(msg, isInit=false) {
+  if (!isInit) chatHistory.push({ role:'user', content: msg });
+  isBusy = true;
+  document.getElementById('send-btn').disabled = true;
+  showTyping();
+
+  try {
+    const res = await fetch('/api/start', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        system: buildSystem(),
+        history: chatHistory.slice(-14),
+        message: isInit ? msg : null,
+        lang: uLang
+      })
+    });
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); } catch { throw new Error('Server error: ' + raw.slice(0,100)); }
+    if (!res.ok) throw new Error(data?.error || 'Server error');
+    hideTyping();
+    chatHistory.push({ role:'assistant', content: data.reply });
+    addMsg('b', data.reply, data.quickReplies || []);
+  } catch(e) {
+    hideTyping();
+    addMsg('b', `Arre yaar, kuch error aayi 😅\n\`${e.message}\`\n\nThodi der baad try karo!`);
+  } finally {
+    isBusy = false;
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('ci').focus();
+  }
+}
+
+async function chatSend() {
+  const ci = document.getElementById('ci');
+  const msg = ci.value.trim();
+  if (!msg || isBusy) return;
+  ci.value = ''; chatResize(ci);
+  addMsg('user', msg);
+  await aiCall(msg);
+}
+function chatKey(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); chatSend(); } }
+function chatResize(el) { el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,110)+'px'; }
+
+/* ═══════════════ LANGUAGE ═══════════════ */
+function setLang(l) {
+  uLang = l;
+  document.getElementById('lhi').classList.toggle('active', l==='hinglish');
+  document.getElementById('len').classList.toggle('active', l==='english');
+}
+
+/* ═══════════════ AI HELPER (shared) ═══════════════ */
+async function callAI(prompt) {
+  const res = await fetch('/api/start', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ system: buildSystem(), history:[], message: prompt, lang: uLang })
+  });
+  const raw = await res.text();
+  const data = JSON.parse(raw);
+  if (!res.ok) throw new Error(data?.error || 'AI error');
+  return data.reply || '';
+}
+
+function setLoading(btnId, outId, loading) {
+  const btn = document.getElementById(btnId);
+  const out = document.getElementById(outId);
+  if (loading) {
+    btn.disabled = true;
+    btn.innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+    out.innerHTML = '';
+    out.classList.add('show');
+  } else {
+    btn.disabled = false;
+  }
+}
+
+function fmtOutput(t) {
+  t = t.replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre>$1</pre>');
+  t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
+  t = t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/\n/g, '<br>');
+  return t;
+}
+
+/* ═══════════════ IDEA GENERATOR ═══════════════ */
+let ideaDiff = 'beginner', ideaCats = [];
+function pickDiff(el) { document.querySelectorAll('[data-d]').forEach(c=>c.classList.remove('on')); el.classList.add('on'); ideaDiff=el.dataset.d; }
+function toggleCat(el) { el.classList.toggle('on'); ideaCats = [...document.querySelectorAll('[data-c].on')].map(c=>c.dataset.c); }
+
+async function genIdeas() {
+  const skills = [...document.querySelectorAll('#idea-skills .chip.on')].map(c=>c.dataset.s);
+  const cats = ideaCats.length ? ideaCats.join(', ') : 'any';
+  const prompt = `Generate 4 unique project ideas for a ${ideaDiff} developer with skills: ${skills.join(', ')}. Category preference: ${cats}.
+Language: ${uLang}.
+For each idea give:
+- Project name (creative)
+- One line description
+- Key features (3 bullet points)  
+- Why it's good for portfolio
+- Estimated time to build
+Format as: NAME|DESCRIPTION|FEATURE1,FEATURE2,FEATURE3|WHY|TIME
+One idea per line. 4 lines total. Nothing else.`;
+
+  setLoading('idea-btn', 'idea-output', true);
+  document.getElementById('idea-btn').innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+  document.getElementById('idea-output').innerHTML = '';
+
+  try {
+    const reply = await callAI(prompt);
+    document.getElementById('idea-btn').disabled = false;
+    document.getElementById('idea-btn').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Ideas';
+    const lines = reply.split('\n').filter(l=>l.includes('|'));
+    const out = document.getElementById('idea-output');
+    lines.slice(0,4).forEach(line => {
+      const [name,desc,feats,why,time] = line.split('|');
+      if (!name) return;
+      const card = document.createElement('div');
+      card.className = 'idea-card';
+      card.innerHTML = `
+        <div class="idea-name"><i class="fa-solid fa-folder" style="color:var(--green);font-size:.75rem"></i>${name?.trim()}</div>
+        <div class="idea-desc">${desc?.trim()}</div>
+        <div class="idea-meta">
+          ${(feats||'').split(',').map(f=>`<span class="badge green">${f.trim()}</span>`).join('')}
+          ${time?`<span class="badge blue">⏱ ${time.trim()}</span>`:''}
+        </div>
+        ${why?`<div style="font-size:.72rem;color:var(--txt3);margin-top:.5rem;font-family:var(--fm)">📌 ${why.trim()}</div>`:''}
+        <button class="action-btn outline" style="margin-top:.6rem;padding:.45rem 1rem;font-size:.72rem" onclick="useIdea('${name?.trim()}','${desc?.trim()}')">
+          <i class="fa-solid fa-arrow-right"></i> Is idea pe kaam karo
+        </button>`;
+      out.appendChild(card);
+    });
+  } catch(e) {
+    document.getElementById('idea-btn').disabled = false;
+    document.getElementById('idea-btn').innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Ideas';
+    document.getElementById('idea-output').innerHTML = `<div style="color:var(--red);font-size:.78rem;padding:.5rem">Error: ${e.message}</div>`;
+  }
+}
+
+function useIdea(name, desc) {
+  document.getElementById('build-input').value = `${name}: ${desc}`;
+  goTab('builder');
+  setTimeout(() => genBuilder(), 300);
+}
+
+/* ═══════════════ PROJECT BUILDER ═══════════════ */
+let tasks = [];
+async function genBuilder() {
+  const idea = document.getElementById('build-input').value.trim();
+  const tech = document.getElementById('build-tech').value.trim();
+  if (!idea) { alert('Pehle project describe kar!'); return; }
+
+  const prompt = `Break down this project into actionable tasks for a beginner developer.
+Project: ${idea}
+Tech: ${tech || 'not specified'}
+Language: ${uLang}
+
+Create a task list grouped by phases. Format:
+PHASE:Phase Name
+TASK:Task description|estimated time
+(repeat for all tasks)
+
+Make tasks very specific and beginner-friendly. 3-4 phases, 3-5 tasks each. Nothing else.`;
+
+  setLoading('build-btn', 'build-output', true);
+  document.getElementById('build-btn').innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+
+  try {
+    const reply = await callAI(prompt);
+    document.getElementById('build-btn').disabled = false;
+    document.getElementById('build-btn').innerHTML = '<i class="fa-solid fa-list-check"></i> Break it into Tasks';
+
+    const out = document.getElementById('build-output');
+    out.innerHTML = '';
+    tasks = [];
+    let phaseEl = null;
+    let taskIdx = 0;
+
+    reply.split('\n').forEach(line => {
+      line = line.trim();
+      if (line.startsWith('PHASE:')) {
+        const ph = document.createElement('div');
+        ph.style.cssText = 'margin-bottom:.3rem;margin-top:.8rem';
+        ph.innerHTML = `<div class="label"><i class="fa-solid fa-layer-group"></i>${line.slice(6)}</div>`;
+        out.appendChild(ph);
+        phaseEl = ph;
+      } else if (line.startsWith('TASK:')) {
+        const [desc, time] = line.slice(5).split('|');
+        const idx = taskIdx++;
+        tasks.push({ desc: desc?.trim(), done: false });
+        const item = document.createElement('div');
+        item.className = 'task-item';
+        item.id = `task-${idx}`;
+        item.onclick = () => toggleTask(idx);
+        item.innerHTML = `
+          <div class="task-cb"><i class="fa-solid fa-check"></i></div>
+          <div>
+            <div class="task-text">${desc?.trim()}</div>
+            ${time?`<div class="task-phase">${time.trim()}</div>`:''}
+          </div>`;
+        out.appendChild(item);
+      }
+    });
+
+    if (!out.innerHTML) {
+      out.innerHTML = `<div style="color:var(--txt2);font-size:.82rem;padding:.5rem">${fmtOutput(reply)}</div>`;
+    }
+    out.classList.add('show');
+
+    // also chat about it
+    addMsg('b', `✅ Maine "${idea}" ko tasks mein tod diya! **Builder tab** mein dekho aur ek ek task complete karte jao. Pehle task start karne mein help chahiye toh puchho! 🚀`);
+    goTab('builder');
+  } catch(e) {
+    document.getElementById('build-btn').disabled = false;
+    document.getElementById('build-btn').innerHTML = '<i class="fa-solid fa-list-check"></i> Break it into Tasks';
+    document.getElementById('build-output').innerHTML = `<div style="color:var(--red);font-size:.78rem">${e.message}</div>`;
+  }
+}
+
+function toggleTask(idx) {
+  tasks[idx].done = !tasks[idx].done;
+  document.getElementById(`task-${idx}`).classList.toggle('done', tasks[idx].done);
+  const done = tasks.filter(t=>t.done).length;
+  if (done === tasks.length && tasks.length > 0) {
+    setTimeout(() => addMsg('b', `🎉 Waah bhai! Saare tasks done kar diye! Ab **Git Guide** tab mein jao aur isko GitHub pe push karo! 🚀`), 500);
+    goTab('chat');
+  }
+}
+
+/* ═══════════════ GIT GUIDE ═══════════════ */
+function toggleStage(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+function copyCmd(el) {
+  const text = el.querySelector('span').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const ic = el.querySelector('.copy-icon');
+    ic.className = 'fa-solid fa-check copy-icon';
+    ic.style.color = 'var(--green)';
+    setTimeout(() => { ic.className = 'fa-regular fa-copy copy-icon'; ic.style.color=''; }, 1500);
+  });
+}
+
+async function genReadme() {
+  const name = document.getElementById('readme-name').value.trim();
+  const desc = document.getElementById('readme-desc').value.trim();
+  if (!name) { alert('Project name daalo!'); return; }
+  const prompt = `Generate a clean, professional README.md for this project:
+Name: ${name}
+Description: ${desc}
+Write a complete README with: title, description, features, installation steps, usage, tech stack, and author section. Use markdown formatting. Keep it concise but complete.`;
+
+  setLoading('readme-btn', 'readme-out', true);
+  document.getElementById('readme-btn').innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+
+  try {
+    const reply = await callAI(prompt);
+    const out = document.getElementById('readme-out');
+    out.innerHTML = `<pre style="white-space:pre-wrap;font-size:.72rem">${reply}</pre>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('readme-out').querySelector('pre').textContent)">
+        <i class="fa-regular fa-copy"></i> Copy README
+      </button>`;
+    out.classList.add('show');
+    document.getElementById('readme-btn').disabled = false;
+    document.getElementById('readme-btn').innerHTML = '<i class="fa-solid fa-magic"></i> Generate README';
+  } catch(e) {
+    document.getElementById('readme-out').innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
+    document.getElementById('readme-btn').disabled = false;
+    document.getElementById('readme-btn').innerHTML = '<i class="fa-solid fa-magic"></i> Generate README';
+  }
+}
+
+/* ═══════════════ HOSTING ═══════════════ */
+const hostingData = {
+  static: [
+    { name:'GitHub Pages', icon:'fa-brands fa-github', badge:'Free', color:'green', desc:'HTML/CSS/JS projects ke liye best. GitHub repo se directly deploy hota hai.',
+      steps:['GitHub pe repo push karo', 'Repo Settings → Pages → Source: main branch', 'Save karo — 2-3 min mein live ho jaayega!', 'URL milega: username.github.io/repo-name'] },
+    { name:'Netlify', icon:'fa-solid fa-n', badge:'Free', color:'blue', desc:'Drag & drop se deploy. Bahut easy. Custom domain bhi milta hai free mein.',
+      steps:['netlify.com pe signup karo', '"New site from Git" ya folder drag & drop karo', 'Deploy hone do (1 min)', 'Random URL milega — custom domain baad mein add kar sakte ho'] },
+    { name:'Vercel', icon:'fa-solid fa-triangle', badge:'Free', color:'purple', desc:'Fastest deployment. GitHub se connect karo — auto deploy on every push.',
+      steps:['vercel.com pe signup (GitHub se)', '"New Project" → GitHub repo import karo', 'Framework: Other (for plain HTML)', 'Deploy karo — tera app live!'] },
+  ],
+  react: [
+    { name:'Vercel', icon:'fa-solid fa-triangle', badge:'Recommended', color:'purple', desc:'React ke liye best. Zero config. Auto build aur deploy.',
+      steps:['vercel.com → New Project → GitHub repo', 'Framework: Vite ya Create React App auto detect hoga', 'Deploy! Environment variables Settings mein daalo', 'Har git push pe auto redeploy hoga'] },
+    { name:'Netlify', icon:'fa-solid fa-n', badge:'Free', color:'blue', desc:'React ke liye bhi achha kaam karta hai. Build command set karna padega.',
+      steps:['netlify.com → New site from Git', 'Build command: npm run build', 'Publish directory: dist (Vite) ya build (CRA)', 'Deploy!'] },
+  ],
+  node: [
+    { name:'Render', icon:'fa-solid fa-server', badge:'Free', color:'orange', desc:'Node.js backends ke liye best free option. Databases bhi host kar sakte ho.',
+      steps:['render.com pe signup karo', '"New Web Service" → GitHub repo connect karo', 'Start command: node index.js ya npm start', 'Environment variables add karo (Dashboard → Environment)', 'Deploy!'] },
+    { name:'Railway', icon:'fa-solid fa-train', badge:'Free Trial', color:'purple', desc:'Developer-friendly. Databases bhi saath mein milti hain.',
+      steps:['railway.app pe signup karo', '"New Project" → Deploy from GitHub repo', 'Environment variables add karo', 'Auto deploys on every push'] },
+  ],
+  python: [
+    { name:'Render', icon:'fa-solid fa-server', badge:'Free', color:'orange', desc:'Flask/Django dono ke liye kaam karta hai. Easy setup.',
+      steps:['render.com → New Web Service', 'Build command: pip install -r requirements.txt', 'Start command: gunicorn app:app', 'Environment variables add karo'] },
+    { name:'PythonAnywhere', icon:'fa-brands fa-python', badge:'Free', color:'blue', desc:'Python specific platform. Flask ke liye bahut easy.',
+      steps:['pythonanywhere.com pe free account banao', 'Files upload karo ya Git clone karo', 'Web tab → Add new web app → Flask', 'WSGI file configure karo — done!'] },
+  ],
+  fullstack: [
+    { name:'Vercel + Render', icon:'fa-solid fa-layer-group', badge:'Recommended', color:'green', desc:'Frontend Vercel pe, Backend Render pe. Best combo for free hosting.',
+      steps:['Frontend (React/HTML) → Vercel pe deploy karo', 'Backend (Node/Python) → Render pe deploy karo', 'Frontend mein API URL environment variable mein daalo', 'CORS set karo backend mein allow your Vercel URL'] },
+    { name:'Railway', icon:'fa-solid fa-train', badge:'Full Stack', color:'purple', desc:'Frontend aur backend dono ek jagah deploy kar sakte ho. Database bhi.',
+      steps:['railway.app → New Project', 'Frontend aur backend ke liye alag services banao', 'Database (Postgres/MySQL) bhi add kar sakte ho', 'Internal networking se connect karo'] },
+  ],
+};
+
+function pickHostType(el) {
+  document.querySelectorAll('[data-ht]').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  renderHosting(el.dataset.ht);
+}
+
+function renderHosting(type) {
+  const opts = hostingData[type] || hostingData.static;
+  const div = document.getElementById('host-options');
+  div.innerHTML = opts.map((h,i) => `
+    <div class="host-card ${i===0?'active':''}" onclick="toggleHost(this)">
+      <div class="host-name">
+        <i class="fa-${h.icon.includes('fa-brands')?'brands':'solid'} ${h.icon.replace('fa-brands ','').replace('fa-solid ','')}"></i>
+        ${h.name} <span class="badge ${h.color}">${h.badge}</span>
+      </div>
+      <div class="host-desc">${h.desc}</div>
+      <div class="host-steps">
+        ${h.steps.map((s,si)=>`<div class="step-box"><div class="step-num">${si+1}</div><div class="step-content">${s}</div></div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function toggleHost(el) {
+  document.querySelectorAll('.host-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* ═══════════════ DEBUG HELPER ═══════════════ */
+let errType = '';
+function pickErr(el) { document.querySelectorAll('.error-chip').forEach(c=>c.classList.remove('on')); el.classList.add('on'); errType=el.dataset.e; }
+
+async function debugIt() {
+  const err = document.getElementById('err-input').value.trim();
+  const code = document.getElementById('code-input').value.trim();
+  if (!err) { alert('Error message paste karo pehle!'); return; }
+
+  const prompt = `You are a debugging expert. A beginner student has this error:
+
+Error type: ${errType || 'unknown'}
+Error message: ${err}
+${code ? `Relevant code:\n${code}` : ''}
+
+In ${uLang === 'hinglish' ? 'Hinglish (friendly casual tone)' : 'simple English'}, provide:
+1. What this error means (simply explain)
+2. Why it happens (common cause)
+3. Exact fix with code example
+4. How to avoid it next time
+
+Be specific, not generic. Max 5-6 short paragraphs.`;
+
+  setLoading('debug-btn', 'debug-out', true);
+  document.getElementById('debug-btn').innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+
+  try {
+    const reply = await callAI(prompt);
+    const out = document.getElementById('debug-out');
+    out.innerHTML = fmtOutput(reply) + `<br><button class="copy-btn" onclick="this.previousSibling.remove();chatWithDebug()"><i class="fa-solid fa-comments"></i> Bhaiya se aur puchho</button>`;
+    out.classList.add('show');
+    document.getElementById('debug-btn').disabled = false;
+    document.getElementById('debug-btn').innerHTML = '<i class="fa-solid fa-magnifying-glass-plus"></i> Fix Dhundo';
+  } catch(e) {
+    document.getElementById('debug-out').innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
+    document.getElementById('debug-btn').disabled = false;
+    document.getElementById('debug-btn').innerHTML = '<i class="fa-solid fa-magnifying-glass-plus"></i> Fix Dhundo';
+  }
+}
+
+function chatWithDebug() {
+  const err = document.getElementById('err-input').value.trim();
+  document.getElementById('ci').value = `Mujhe ye error aa rahi hai: ${err.slice(0,200)}`;
+  goTab('chat');
+  chatSend();
+}
+
+/* ═══════════════ PORTFOLIO CHECKER ═══════════════ */
+const portfolioChecks = [
+  { id:'repos', label:'5+ public repositories', tip:'Kam se kam 5 public repos hone chahiye', weight:20 },
+  { id:'readme', label:'Repos mein README files', tip:'Har repo mein README honi chahiye', weight:15 },
+  { id:'pinned', label:'Top projects pinned', tip:'Best 6 repos pin karo profile pe', weight:10 },
+  { id:'bio', label:'GitHub bio filled', tip:'Bio mein skills aur contact daalo', weight:10 },
+  { id:'avatar', label:'Profile picture set', tip:'Professional photo ya avatar lagao', weight:5 },
+  { id:'commits', label:'Regular commits (green graph)', tip:'Roz ya weekly commit karo', weight:15 },
+  { id:'portfolio-site', label:'Portfolio website linked', tip:'GitHub profile mein website URL daalo', weight:15 },
+  { id:'linkedin', label:'LinkedIn profile linked', tip:'Professional network banana zaroori hai', weight:10 },
+];
+
+function renderPortfolioChecklist() {
+  const list = document.getElementById('check-list');
+  list.innerHTML = portfolioChecks.map(c => `
+    <div class="check-item" id="ci-${c.id}" onclick="toggleCheck('${c.id}')">
+      <div class="check-left">
+        <div class="check-icon"><i class="fa-solid fa-check"></i></div>
+        <div>
+          <div class="check-label">${c.label}</div>
+          <div class="check-tip">${c.tip}</div>
+        </div>
+      </div>
+      <span class="badge blue">${c.weight}%</span>
+    </div>`).join('');
+  updateScore();
+}
+
+function toggleCheck(id) {
+  const el = document.getElementById('ci-'+id);
+  el.classList.toggle('done');
+  el.classList.toggle('miss', !el.classList.contains('done'));
+  updateScore();
+}
+
+function updateScore() {
+  const done = portfolioChecks.filter(c => document.getElementById('ci-'+c.id)?.classList.contains('done'));
+  const score = done.reduce((s,c) => s+c.weight, 0);
+  document.getElementById('score-val').textContent = score+'%';
+  const offset = 201 - (201 * score/100);
+  document.getElementById('score-arc').style.strokeDashoffset = offset;
+  const arc = document.getElementById('score-arc');
+  arc.style.stroke = score >= 80 ? 'var(--green)' : score >= 50 ? 'var(--yellow)' : 'var(--red)';
+}
+
+async function checkPortfolio() {
+  const user = document.getElementById('gh-user').value.trim();
+  if (!user) { alert('GitHub username daalo!'); return; }
+
+  setLoading('port-btn', 'portfolio-ai-out', true);
+  document.getElementById('port-btn').innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+
+  try {
+    const r = await fetch(`https://api.github.com/users/${user}`);
+    if (!r.ok) throw new Error('GitHub user nahi mila');
+    const d = await r.json();
+    const reposR = await fetch(`https://api.github.com/users/${user}/repos?per_page=100`);
+    const repos = reposR.ok ? await reposR.json() : [];
+
+    // Auto-check some items
+    if (d.avatar_url && !d.avatar_url.includes('default')) document.getElementById('ci-avatar')?.classList.add('done');
+    if (d.bio) document.getElementById('ci-bio')?.classList.add('done');
+    if (d.blog) document.getElementById('ci-portfolio-site')?.classList.add('done');
+    if (repos.length >= 5) document.getElementById('ci-repos')?.classList.add('done');
+    if (repos.some(r=>r.has_projects)) document.getElementById('ci-pinned')?.classList.add('done');
+    updateScore();
+
+    const prompt = `Analyze this GitHub profile for a college student:
+Username: ${user}
+Bio: ${d.bio || 'none'}
+Public repos: ${d.public_repos}
+Followers: ${d.followers}
+Website: ${d.blog || 'none'}
+Top repos: ${repos.slice(0,5).map(r=>r.name).join(', ')}
+
+In ${uLang === 'hinglish' ? 'Hinglish' : 'English'}, give:
+1. Overall profile assessment (2-3 sentences)
+2. Top 3 specific improvements to make RIGHT NOW
+3. What recruiters will think when they see this
+Keep it honest but encouraging. Max 3-4 short paragraphs.`;
+
+    const reply = await callAI(prompt);
+    const out = document.getElementById('portfolio-ai-out');
+    out.innerHTML = fmtOutput(reply);
+    out.classList.add('show');
+    document.getElementById('port-btn').disabled = false;
+    document.getElementById('port-btn').innerHTML = '<i class="fa-solid fa-search"></i> Check';
+  } catch(e) {
+    document.getElementById('portfolio-ai-out').innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
+    document.getElementById('portfolio-ai-out').classList.add('show');
+    document.getElementById('port-btn').disabled = false;
+    document.getElementById('port-btn').innerHTML = '<i class="fa-solid fa-search"></i> Check';
+  }
+}
+
+/* ═══════════════ INTERVIEW PREP ═══════════════ */
+const ivQA = [
+  { q:'Tell me about a project you built', a:'Ek project choose karo — uska purpose, what problem it solves, what tech you used, aur kya interesting challenge aaya tha build karte time. Specific raho, generic mat bolo.' },
+  { q:'Why did you choose this tech stack?', a:'Pehle kya alternatives the, unhe kyun nahi choose kiya, aur is stack ke advantages kya the tera use case ke liye — ye logic explain karo.' },
+  { q:'What was the biggest challenge?', a:'Ek real problem batao — CORS error, API integration, state management — aur tum exactly kaise solve kiya. Google karke fix kiya bhi valid hai, bas process batao.' },
+  { q:'How would you improve this project?', a:'Ye question batata hai tum apne kaam ko critically dekh sakte ho. Features jo add karna chahoge, performance improvements, better error handling — soch ke rakho.' },
+  { q:"Explain your project's code structure", a:'Folders kaise organize kiye, frontend-backend separation kaisi hai, important files kya hain — agar GitHub pe README mein ye likha hai toh directly refer kar sakte ho.' },
+  { q:'Did you work in a team? How did you use Git?', a:'Branching strategy, commit messages, pull requests — agar solo project bhi hai toh batao ki git history maintain karte the aur features branches pe karte the.' },
+  { q:'How did you deploy it? Where is it hosted?', a:'Platform name batao (Vercel/Netlify/Render), deployment process briefly, aur live link share karo. Live projects = instant credibility.' },
+  { q:"What would you do differently if you started over?", a:'Mature answer hai ye. Architecture decisions, over-engineering, tech choices jo better hoti — honest reflection shows growth mindset.' },
+];
+
+function renderInterviewQA() {
+  const list = document.getElementById('iq-list');
+  list.innerHTML = ivQA.map((qa,i) => `
+    <div class="interview-qa" id="iq-${i}">
+      <div class="iq-header" onclick="toggleIQ(${i})">
+        <div class="iq-q">Q: ${qa.q}</div>
+        <i class="fa-solid fa-chevron-down iq-chev"></i>
+      </div>
+      <div class="iq-body">${qa.a}</div>
+    </div>`).join('');
+}
+
+function toggleIQ(i) {
+  document.getElementById('iq-'+i).classList.toggle('open');
+}
+
+async function genInterview() {
+  const proj = document.getElementById('iv-project').value.trim();
+  if (!proj) { alert('Pehle apna project describe karo!'); return; }
+
+  const prompt = `Generate 6 realistic technical interview questions for this project:
+${proj}
+Language: ${uLang}
+
+For each question provide:
+- The question an interviewer would ask
+- How to answer it well (tips, what to include)
+Format: Q: question here
+A: answer tips here
+
+Be specific to this project, not generic. Make questions progressively harder.`;
+
+  setLoading('iv-btn', 'iv-out', true);
+  document.getElementById('iv-btn').innerHTML = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+
+  try {
+    const reply = await callAI(prompt);
+    const out = document.getElementById('iv-out');
+    out.innerHTML = fmtOutput(reply);
+    out.classList.add('show');
+    document.getElementById('iv-btn').disabled = false;
+    document.getElementById('iv-btn').innerHTML = '<i class="fa-solid fa-comments"></i> Generate Questions';
+  } catch(e) {
+    document.getElementById('iv-out').innerHTML = `<span style="color:var(--red)">${e.message}</span>`;
+    document.getElementById('iv-btn').disabled = false;
+    document.getElementById('iv-btn').innerHTML = '<i class="fa-solid fa-comments"></i> Generate Questions';
+  }
+}
+</script>
 </body>
 </html>
