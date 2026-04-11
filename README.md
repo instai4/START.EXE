@@ -1,6 +1,6 @@
 # START.EXE
 
-A comprehensive guide and tool designed to empower aspiring developers on their journey from initial concept to successful project deployment. START.EXE demystifies the process of creating, managing, and showcasing your projects on platforms like GitHub, and guides you through the essentials of hosting web applications, ensuring your work, no matter its current stage, finds its way to the web.
+A comprehensive guide and tool designed to empower aspiring developers on their journey from initial concept to successful project deployment. START.EXE demystifies the process of creating, managing, and showcasing your projects on platforms like GitHub, and guides you through the essentials of hosting web applications, ensuring your work, no matter its current stage, finds its way to the web
 
 ---
 
